@@ -10,6 +10,9 @@ type Usuario = {
   usuario_sg_ingreso: { correo_institucional: string } | null;
 };
 
+// Guardamos la URL de Render en una constante para no repetir código y facilitar cambios
+const API_URL = 'https://gestion-asistencia-5xn4.onrender.com';
+
 export function App() {
   const [vista, setVista] = useState<'marcado' | 'login' | 'admin'>('marcado');
   const [identificador, setIdentificador] = useState('');
@@ -27,7 +30,7 @@ export function App() {
   // Cargar usuarios en el panel Admin
   const cargarUsuarios = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/usuarios');
+      const res = await fetch(`${API_URL}/api/usuarios`);
       const data = await res.json();
       setUsuarios(data);
     } catch (err) {
@@ -46,7 +49,7 @@ export function App() {
     setErrorAsistencia('');
     
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/asistencia/marcar', {
+      const res = await fetch(`${API_URL}/api/asistencia/marcar`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ identificador })
@@ -68,7 +71,7 @@ export function App() {
   const manejarLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/auth/login', {
+      const res = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ correo, contrasenia })
@@ -88,7 +91,7 @@ export function App() {
   const manejarCrearUsuario = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/usuarios', {
+      const res = await fetch(`${API_URL}/api/usuarios`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formNuevo)
@@ -109,7 +112,7 @@ export function App() {
   const eliminarUsuario = async (id_ingreso: number) => {
     if (confirm('¿Seguro que deseas eliminar este usuario?')) {
       try {
-        await fetch(`http://127.0.0.1:5000/api/usuarios/${id_ingreso}`, { method: 'DELETE' });
+        await fetch(`${API_URL}/api/usuarios/${id_ingreso}`, { method: 'DELETE' });
         cargarUsuarios();
       } catch (err) {
         alert('No se pudo eliminar el usuario.');
@@ -119,7 +122,7 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-[#f4f6f9] font-sans text-slate-800 antialiased pb-12">
-      {/* Navbar Superior al estilo de la imagen */}
+      {/* Navbar Superior */}
       <header className="max-w-7xl mx-auto pt-6 px-4">
         <div className="bg-[#003c71] text-white p-6 rounded-2xl shadow-md transition-all">
           <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
@@ -162,7 +165,7 @@ export function App() {
           <div className="bg-white rounded-2xl shadow-xl border border-slate-200/60 p-8">
             <div className="text-center mb-6">
               <div className="inline-flex p-3 bg-blue-50 text-[#003c71] rounded-full mb-3">
-                <svg className="w-6 height-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                 </svg>
               </div>
@@ -289,9 +292,8 @@ export function App() {
               </form>
             </div>
 
-            {/* Tabla de Registrados (Derecha - Equivalente a "Listado Oficial") */}
+            {/* Tabla de Registrados */}
             <div className="lg:col-span-2 bg-white rounded-2xl shadow-md border border-slate-200/60 overflow-hidden">
-              {/* Encabezado igual a la imagen */}
               <div className="p-5 bg-white border-b border-slate-100 flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <span className="text-[#003c71]">
