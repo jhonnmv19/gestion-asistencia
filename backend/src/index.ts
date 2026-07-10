@@ -160,7 +160,9 @@ app.get('/api/asistencias', async (req: Request, res: Response) => {
     }
 });
 
-const PORT = process.env.PORT || 5000; 
-app.listen(PORT, () => {
+const PORT = process.env.PORT || 5000;
+
+// Escuchar en '0.0.0.0' es crucial para que plataformas como Render expongan el puerto correctamente
+app.listen(Number(PORT), '0.0.0.0', () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
